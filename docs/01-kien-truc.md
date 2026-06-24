@@ -55,7 +55,7 @@ tài nguyên + cloud-init → bật máy. Kết quả là một VPS chạy thậ
 |---|---|
 | Web panel | Node.js (ESM) · Express 4 · HTML/CSS/JS thuần (không framework) |
 | API service | Python 3.13 · FastAPI · proxmoxer · uvicorn · Pydantic |
-| Hạ tầng | Proxmox VE 9.2.2 (Debian 13) · KVM/QEMU · cloud-init · lvmthin (`local-lvm`) |
+| Hạ tầng | Proxmox VE 8.x/9.x (Debian 12/13) · KVM/QEMU · cloud-init · lvmthin (`local-lvm`) |
 
 > `local-lvm` là storage **LVM thin-provisioned** do Proxmox quản lý: khai báo disk lớn (vd 100GB)
 > nhưng chỉ tốn dung lượng thực dùng. Code không có logic thin/full riêng — chỉ truyền `storage` + `disk_gb`.

@@ -56,7 +56,7 @@ pvesm set local --content iso,vztmpl,backup,import,snippets
 
 ## B. Triển khai FastAPI service
 
-Service chạy **ngay trên host Proxmox** (Debian 13).
+Service chạy **ngay trên host Proxmox** (Debian 12/13).
 
 ### B.1. Copy code & cài môi trường
 

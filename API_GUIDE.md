@@ -131,7 +131,7 @@ Endpoint chính. Clone template → cấu hình → (tuỳ chọn) bật máy. T
 | `start` | bool | ❌ | `true` | Bật VM ngay sau khi tạo. |
 
 **Ghi chú thêm về một số trường:**
-- **`node` / `template_id` / `storage` / `bridge`**: ở tầng schema (Pydantic) mặc định là `null`; nếu **bỏ trống** trong body, service tự điền từ file `.env` server (`/opt/proxmox-vps-api/.env`). Cột "Mặc định" ở trên là giá trị `.env` của deployment hiện tại (`pve` / `9000` / `local-lvm` / `vmbr0`). Gửi giá trị trong body để **override** từng request.
+- **`node` / `template_id` / `storage` / `bridge`**: ở tầng schema (Pydantic) mặc định là `null`; nếu **bỏ trống** trong body, service tự điền từ file `.env` server (`/opt/proxmox-vps-api/.env`). Cột "Mặc định" ở trên là giá trị `.env` mặc định (`pve` / `9000` / `local-lvm` / `vmbr0`). Gửi giá trị trong body để **override** từng request.
 - **`full_clone`**: `true` (mặc định) copy toàn bộ disk → VM **độc lập** với template (xoá template vẫn chạy), nhưng tạo lâu & tốn dung lượng hơn. `false` (linked clone) dùng snapshot template → tạo **nhanh & tiết kiệm**, nhưng **không được xoá template** (xoá sẽ hỏng VM con).
 - **`ci_password` / `ssh_public_key`**: chỉ có tác dụng khi đặt `ci_user`. Nên ưu tiên `ssh_public_key` thay vì mật khẩu cho an toàn. Mật khẩu nên thoả yêu cầu cloud-init (đủ dài, có chữ/số/ký tự đặc biệt).
 - **`disk_gb`**: resize được thực hiện trên disk **`scsi0`** (template `9000` dùng `scsi0`). Nếu template của bạn dùng tên disk khác (`virtio0`, `sata0`...), bước resize sẽ báo lỗi `400`. Chỉ **tăng** được, không giảm.

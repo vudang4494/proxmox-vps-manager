@@ -211,7 +211,7 @@ class ProxmoxClient:
     def open_term_console(self, node: str, vmid: int) -> dict:
         """Mở phiên serial/xterm console cho VM, trả bộ ticket để client mở websocket.
 
-        Dùng API token (đã kiểm chứng chạy trên PVE 9.2 cho cả `termproxy` lẫn
+        Dùng API token (đã kiểm chứng chạy trên PVE 9.x cho cả `termproxy` lẫn
         websocket `vncwebsocket`). Login-ticket bằng mật khẩu KHÔNG dùng được vì
         root@pam bật 2FA.
 

@@ -16,7 +16,7 @@ gồm 3 tầng: **Web panel (Node.js)** → **API service (FastAPI)** → **Prox
 
 ## Quickstart (30 giây)
 
-Hệ thống đã được deploy. Để dùng ngay:
+Sau khi đã dựng theo docs/02, để dùng ngay:
 
 ```bash
 # 1) Mở SSH tunnel tới FastAPI (8000) + Shell Console Proxmox (8006) — giữ terminal mở
@@ -37,7 +37,7 @@ Hoặc gọi thẳng API bằng curl — xem [API Reference](../API_GUIDE.md).
 | Hạng mục | Giá trị |
 |---|---|
 | Server Proxmox | `pve` — `YOUR_PROXMOX_HOST` (SSH cổng `22`) |
-| Phiên bản | Proxmox VE 9.2.2 · Debian 13 · 128 CPU / 540 GB RAM |
+| Phiên bản | Proxmox VE 8.x/9.x · Debian 12/13 (điền theo môi trường của bạn) |
 | Template clone | VMID `9000` (`ubuntu-2404-tpl`, Ubuntu 24.04 + cloud-init) |
 | FastAPI service | `/opt/proxmox-vps-api` · systemd `proxmox-vps-api` · `127.0.0.1:8000` |
 | Web panel | `web/` (Node.js/Express) · port `9999` · **có đăng nhập** (PM2 `cloudproxmox`) |

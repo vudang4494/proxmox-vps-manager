@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Deploy tính năng Shell Console + chi tiết VM (giữ nguyên kiến trúc đang chạy).
-# Console dùng API TOKEN (đã kiểm chứng chạy trên PVE 9.2) — KHÔNG cần root password.
+# Console dùng API TOKEN (đã kiểm chứng chạy trên PVE 9.x) — KHÔNG cần root password.
 # Idempotent. Dùng:  bash deploy_console.sh
 set -euo pipefail
 

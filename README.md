@@ -5,6 +5,13 @@ API tự động hoá việc **tạo và quản lý VPS (KVM)** trên Proxmox VE
 
 Stack: **FastAPI** + **proxmoxer**, xác thực Proxmox bằng **API Token**.
 
+> 🧩 **Đây là source mẫu (template trắng).** Mọi thông tin gắn với môi trường cụ thể —
+> IP/host Proxmox, API token, API key, mật khẩu đăng nhập web, node, storage, domain… —
+> đều đã được thay bằng **placeholder** (vd `YOUR_PROXMOX_HOST`, `pve`, `change-me`).
+> Người clone về **tự điền giá trị của mình** vào `.env` và `web/.env`
+> (copy từ `.env.example` / `web/.env.example`). Repo **không kèm bất kỳ secret nào** —
+> file `Key` và mọi `.env` đều bị `.gitignore`.
+
 ---
 
 ## 1. Chuẩn bị trên Proxmox
@@ -70,7 +77,7 @@ python check_connection.py
 
 Ví dụ kết quả mong đợi:
 ```
-✅ Xác thực token OK. Proxmox VE version: 9.2.2
+✅ Xác thực token OK. Proxmox VE version: 9.x.x
 ✅ Node 'pve' tồn tại.
 ✅ Template VMID 9000 tồn tại và là template (name='ubuntu-2404-tpl').
 ✅ Storage 'local-lvm' khả dụng trên node 'pve'.
@@ -78,13 +85,13 @@ Ví dụ kết quả mong đợi:
 ✅ Tất cả kiểm tra đạt. Sẵn sàng tạo VPS qua API.
 ```
 
-> **Mô hình triển khai (đã deploy):** service chạy **ngay trên host Proxmox**
+> **Mô hình triển khai khuyến nghị:** service chạy **ngay trên host Proxmox**
 > (`/opt/proxmox-vps-api`, systemd `proxmox-vps-api`, bind `127.0.0.1:8000`) nên
 > `PROXMOX_HOST=127.0.0.1` — gọi Proxmox API cục bộ qua cổng 8006. Web panel ở Mac
 > (port 9999) tới được FastAPI (cổng `8000`) **và Shell Console** (cổng `8006`) nhờ **SSH tunnel
 > forward cả hai cổng**: `ssh -p 22 -N -L 8000:127.0.0.1:8000 -L 8006:127.0.0.1:8006 root@<host>`.
 > Chi tiết: `docs/01-kien-truc.md`, `docs/02-trien-khai.md`. *(Service cũng có thể chạy ở máy khác
-> rồi trỏ `PROXMOX_HOST` tới IP Proxmox — nhưng đó KHÔNG phải cấu hình đang chạy.)*
+> rồi trỏ `PROXMOX_HOST` tới IP Proxmox.)*
 
 > **Web panel (`web/`, port 9999):** có **đăng nhập** (session), tạo VPS kèm **User/Pass riêng cho
 > mỗi VPS** (quyền sudo, độc lập user Proxmox), **Shell Console** (xterm.js) và xem **chi tiết** từng VM.
@@ -165,4 +172,10 @@ Nếu bước 3–5 lỗi, VM vừa clone sẽ được **tự động xoá (rol
   chạy sau reverse proxy có HTTPS.
 - **Quyền token**: nên dùng user riêng với quyền tối thiểu thay vì `root@pam`.
 - **Multi-node**: truyền `node` trong request, hoặc bổ sung logic chọn node theo tải.
-```
+
+---
+
+## 6. License
+
+Phát hành theo giấy phép **MIT** — xem [LICENSE](LICENSE). Tự do dùng/sửa/phân phối;
+chỉ cần điền thông tin cấu hình (Proxmox host, token, mật khẩu…) của riêng bạn.
