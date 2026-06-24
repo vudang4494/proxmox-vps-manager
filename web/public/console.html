@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shell Console — VPS</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { height: 100%; background: #000; font-family: system-ui, sans-serif; }
+      #bar {
+        height: 36px; display: flex; align-items: center; gap: 16px;
+        padding: 0 12px; background: #1c1c28; color: #ddd; font-size: 13px;
+      }
+      #bar .title { font-weight: 600; color: #fff; }
+      #bar .state { margin-left: auto; }
+      #bar .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background: #888; vertical-align: middle; }
+      #bar .dot.ok { background: #24a148; }
+      #bar .dot.err { background: #da1e28; }
+      #term { height: calc(100% - 36px); padding: 6px; }
+    </style>
+  </head>
+  <body>
+    <div id="bar">
+      <span class="title">🖥️ Shell Console</span>
+      <span id="vm-label">—</span>
+      <span class="state"><span id="dot" class="dot"></span><span id="state-text">Đang kết nối…</span></span>
+    </div>
+    <div id="term"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const vmid = params.get('vmid');
+      const name = params.get('name') || '';
+      document.getElementById('vm-label').textContent = `VMID ${vmid}${name ? ' · ' + name : ''}`;
+
+      const setState = (text, cls) => {
+        document.getElementById('state-text').textContent = text;
+        document.getElementById('dot').className = 'dot' + (cls ? ' ' + cls : '');
+      };
+
+      const term = new Terminal({
+        cursorBlink: true,
+        fontFamily: 'IBM Plex Mono, Menlo, Consolas, monospace',
+        fontSize: 14,
+        theme: { background: '#000000' },
+      });
+      const fit = new FitAddon.FitAddon();
+      term.loadAddon(fit);
+      term.open(document.getElementById('term'));
+      fit.fit();
+
+      const byteLen = (s) => new TextEncoder().encode(s).length;
+      const decoder = new TextDecoder();
+
+      async function start() {
+        // 1) Lấy ticket console từ Node BFF (cookie giữ phía server)
+        let info;
+        try {
+          const res = await fetch(`/api/vps/${vmid}/console`, { method: 'POST' });
+          info = await res.json();
+          if (!res.ok) throw new Error(info.detail || `HTTP ${res.status}`);
+        } catch (e) {
+          setState('Không lấy được ticket: ' + e.message, 'err');
+          term.write(`\r\n\x1b[31m[Lỗi mở console: ${e.message}]\x1b[0m\r\n`);
+          return;
+        }
+
+        // 2) Mở WebSocket tới Node BFF (Node cầu tiếp lên Proxmox)
+        const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+        const ws = new WebSocket(`${proto}://${location.host}/api/console?token=${info.wsToken}`);
+        ws.binaryType = 'arraybuffer';
+
+        let authed = false; // bỏ qua "OK" đầu tiên từ server
+
+        ws.onopen = () => {
+          setState('Đã kết nối — gõ Enter nếu màn hình trống', 'ok');
+          // Thông điệp xác thực đầu tiên theo giao thức Proxmox xterm: "user:ticket\n"
+          ws.send(`${info.user}:${info.ticket}\n`);
+          // Gửi kích thước terminal
+          ws.send(`1:${term.cols}:${term.rows}:`);
+          term.focus();
+          // VM đã boot xong thì serial im tới khi có input — gửi 1 Enter để hiện prompt login ngay.
+          setTimeout(() => { if (ws.readyState === WebSocket.OPEN) ws.send('0:1:\r'); }, 700);
+        };
+
+        ws.onmessage = (ev) => {
+          const text = typeof ev.data === 'string' ? ev.data : decoder.decode(new Uint8Array(ev.data));
+          if (!authed) {
+            authed = true;
+            if (text === 'OK') return; // nuốt phản hồi auth
+          }
+          term.write(text);
+        };
+
+        ws.onclose = () => setState('Đã ngắt kết nối', 'err');
+        ws.onerror = () => setState('Lỗi WebSocket', 'err');
+
+        // Gõ phím -> server: "0:<bytelen>:<data>"
+        term.onData((d) => {
+          if (ws.readyState === WebSocket.OPEN) ws.send(`0:${byteLen(d)}:${d}`);
+        });
+
+        // Đổi kích thước -> server: "1:cols:rows:"
+        term.onResize(({ cols, rows }) => {
+          if (ws.readyState === WebSocket.OPEN) ws.send(`1:${cols}:${rows}:`);
+        });
+        window.addEventListener('resize', () => fit.fit());
+
+        // Keepalive theo giao thức: gửi "2" định kỳ
+        const ka = setInterval(() => {
+          if (ws.readyState === WebSocket.OPEN) ws.send('2');
+          else clearInterval(ka);
+        }, 30_000);
+      }
+
+      start();
+    </script>
+  </body>
+</html>

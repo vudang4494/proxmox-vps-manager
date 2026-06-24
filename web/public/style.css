@@ -1,0 +1,169 @@
+:root {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --border: #334155;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --green: #22c55e;
+  --red: #ef4444;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+header {
+  padding: 28px 20px 8px;
+  text-align: center;
+  position: relative;
+}
+.logout-form { position: absolute; top: 16px; right: 20px; margin: 0; }
+.logout-form button { padding: 6px 12px; font-size: 13px; }
+header h1 { margin: 0; font-size: 26px; }
+header .sub { color: var(--muted); margin: 6px 0 0; }
+
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  gap: 20px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+}
+.card h2 { margin: 0 0 16px; font-size: 18px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field label { font-size: 13px; color: var(--muted); }
+.field small { font-size: 12px; color: var(--muted); }
+
+input, select {
+  background: #0b1220;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  width: 100%;
+}
+input:focus, select:focus { outline: none; border-color: var(--accent); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+.advanced { margin: 4px 0 14px; }
+.advanced summary { cursor: pointer; color: var(--muted); font-size: 14px; }
+
+.note {
+  background: #0b1220;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:hover { background: var(--accent-hover); }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+button.ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 6px 12px;
+  font-weight: 500;
+}
+button.danger { background: var(--red); padding: 6px 12px; }
+
+.result {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  white-space: pre-wrap;
+}
+.result.ok { background: rgba(34, 197, 94, 0.12); border: 1px solid var(--green); }
+.result.err { background: rgba(239, 68, 68, 0.12); border: 1px solid var(--red); }
+
+.row-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.row-between h2 { margin: 0; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 500; font-size: 12px; }
+.muted { color: var(--muted); text-align: center; }
+
+.badge { padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.badge.running { background: rgba(34, 197, 94, 0.18); color: var(--green); }
+.badge.stopped { background: rgba(148, 163, 184, 0.18); color: var(--muted); }
+
+/* Hàng mật khẩu + nút tạo */
+.pw-row { display: flex; gap: 8px; }
+.pw-row input { flex: 1; }
+.pw-row button { white-space: nowrap; padding: 10px 12px; }
+
+/* Khối thông tin user/pass sau khi tạo VPS */
+.creds {
+  margin-top: 10px;
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  background: #0b1220;
+  border: 1px solid var(--green);
+  border-radius: 8px;
+}
+.creds code {
+  background: #000;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  user-select: all;
+  color: #fff;
+}
+
+/* Thao tác per-VM */
+.actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.actions button { font-size: 12px; padding: 5px 10px; }
+
+/* Hàng chi tiết cấu hình VM */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px 18px;
+  background: #0b1220;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.detail-grid > div { font-size: 13px; }
+.detail-grid .k {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
+}

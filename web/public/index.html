@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proxmox VPS Panel</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <form method="post" action="/logout" class="logout-form"><button class="ghost" type="submit">Đăng xuất</button></form>
+      <h1>🖥️ Proxmox VPS Panel</h1>
+      <p class="sub">Tạo VPS mới trên Proxmox — chọn cấu hình rồi bấm Tạo.</p>
+    </header>
+
+    <main>
+      <!-- Form tạo VPS -->
+      <section class="card">
+        <h2>Tạo VPS mới</h2>
+        <form id="create-form">
+          <div class="field">
+            <label for="name">Tên VPS</label>
+            <input id="name" name="name" placeholder="vd: vps-khach-01" required />
+            <small>Chỉ chữ, số và dấu "-".</small>
+          </div>
+
+          <div class="grid-3">
+            <div class="field">
+              <label for="cpu">CPU</label>
+              <select id="cpu" name="cpu" required></select>
+            </div>
+            <div class="field">
+              <label for="ramGb">RAM</label>
+              <select id="ramGb" name="ramGb" required></select>
+            </div>
+            <div class="field">
+              <label for="ssdGb">SSD</label>
+              <select id="ssdGb" name="ssdGb" required></select>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="ciUser">User đăng nhập VPS</label>
+              <input id="ciUser" name="ciUser" value="vpsadmin" placeholder="vd: vpsadmin" required />
+              <small>Tài khoản riêng của VPS, có <b>toàn quyền sudo</b> — KHÔNG dính tới user Proxmox.</small>
+            </div>
+            <div class="field">
+              <label for="ciPassword">Mật khẩu</label>
+              <div class="pw-row">
+                <input id="ciPassword" name="ciPassword" type="text" placeholder="mật khẩu mạnh" required />
+                <button type="button" id="gen-pw" class="ghost">🎲 Tạo</button>
+              </div>
+              <small>Mỗi VPS một mật khẩu riêng. Bấm "Tạo" để sinh ngẫu nhiên.</small>
+            </div>
+          </div>
+
+          <div class="note">🌐 Network: <b>để trống → DHCP</b> (gán IP WAN tĩnh sẽ thiết kế sau).</div>
+
+          <button type="submit" id="submit-btn">Tạo VPS</button>
+        </form>
+        <div id="result" class="result" hidden></div>
+      </section>
+
+      <!-- Danh sách VPS -->
+      <section class="card">
+        <div class="row-between">
+          <h2>VPS hiện có</h2>
+          <button id="refresh-btn" class="ghost">⟳ Làm mới</button>
+        </div>
+        <table id="vps-table">
+          <thead>
+            <tr>
+              <th>VMID</th>
+              <th>Tên</th>
+              <th>Node</th>
+              <th>Trạng thái</th>
+              <th>CPU</th>
+              <th>RAM</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="vps-tbody">
+            <tr><td colspan="7" class="muted">Đang tải…</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
